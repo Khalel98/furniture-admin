@@ -1,0 +1,32 @@
+import axios from 'axios'
+import store from './store'
+
+const apiKey = 'http://192.168.31.88:8080'
+
+const instance = axios.create({
+  baseURL: apiKey,
+  timeout: 5000,
+  headers: {
+    'Content-Type': 'application/json'
+    // 'X-Connection-Id': store.getters.currentConnection
+  }
+})
+
+instance.interceptors.request.use(
+  (config) => {
+    const activeToken = store.getters.activeToken
+
+    if (activeToken) {
+      config.headers.Authorization = `Bearer ${activeToken}`
+    }
+
+    config.headers['X-Connection-Id'] = store.getters.currentConnection // Replace with your connection ID
+
+    return config
+  },
+  (error) => {
+    return Promise.reject(error)
+  }
+)
+
+export default instance
