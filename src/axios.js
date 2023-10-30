@@ -1,14 +1,13 @@
 import axios from 'axios'
 import store from './store'
 
-const apiKey = 'http://192.168.31.88:8080'
+const apiKey = 'https://api.app-mebel.kz/api/v1'
 
 const instance = axios.create({
   baseURL: apiKey,
   timeout: 5000,
   headers: {
     'Content-Type': 'application/json'
-    // 'X-Connection-Id': store.getters.currentConnection
   }
 })
 

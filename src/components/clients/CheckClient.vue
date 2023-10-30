@@ -79,7 +79,7 @@ export default {
       }
 
       try {
-        const response = await axios.get('/api/v1/clients/show', {
+        const response = await axios.get('clients/show', {
           params: data
         })
         console.log('Response:', response.data)

@@ -36,7 +36,7 @@ export default createStore({
     async login({ commit }, credentials) {
       // eslint-disable-next-line no-useless-catch
       try {
-        const response = await axios.post('/api/v1/login', credentials)
+        const response = await axios.post('login', credentials)
         const { token, name, role, connection } = response.data
         commit('setToken', token)
         commit('setUser', name)
@@ -48,7 +48,7 @@ export default createStore({
     },
     async logout({ commit, state }) {
       try {
-        await axios.get('/api/v1/logout', {
+        await axios.get('logout', {
           headers: {
             Authorization: `Bearer  ${state.token}`
           }

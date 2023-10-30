@@ -126,7 +126,7 @@ export default {
       }
 
       try {
-        const response = await axios.get('/api/v1/orders/create', {
+        const response = await axios.get('orders/create', {
           params: data
         })
         console.log('Response:', response.data)

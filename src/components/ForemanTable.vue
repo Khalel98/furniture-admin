@@ -1,4 +1,5 @@
 <template>
+  {{ position }}
   <div class="section__row">
     <SearchComponent :value="search" @update:value="search = $event" />
   </div>
@@ -32,7 +33,7 @@
     </template>
 
     <template v-slot:[`item.order_num`]="{ item }">
-      <a class="order__link" :href="'/page/' + item.id" target="_blank">{{ item.order_num }}</a>
+      <a class="order__link" :href="'/page/' + item.id">{{ item.order_num }}</a>
     </template>
 
     <template v-slot:[`item.created_at`]="{ item }">
@@ -41,17 +42,6 @@
 
     <template v-slot:[`item.date_end`]="{ item }">
       <span>{{ new Date(item.date_end).toLocaleString('ru-RU') }}</span>
-    </template>
-
-    <template v-slot:[`item.technologists`]="{ item }">
-      <v-btn
-        class="takeOrder"
-        :style="{
-          backgroundColor: item.technologists == 0 ? '#2176ff' : '#32d47b'
-        }"
-        @click="takeOrder(item.technologists, item.id)"
-        >{{ item.technologists == 0 ? 'Взять заказ' : 'Заказ взят' }}</v-btn
-      >
     </template>
 
     <template v-slot:bottom>
@@ -96,29 +86,27 @@ export default {
     SearchComponent
   },
   props: ['value'],
-  setup(props, { emit }) {
+  setup(props) {
+    console.log(props.value)
+    const position = props.value
+
     const router = useRouter()
-    // eslint-disable-next-line no-unused-vars
-    const emitValue = () => {
-      emit('update:value', inputValue.value)
-    }
+
     // Define a ref to store the response data
     const responseData = ref(null)
     // Data properties using ref
-    const inputValue = ref(props.value)
     const page = ref(1)
     const search = ref('')
     const itemsPerPage = ref(10)
     const total = ref(null)
     const isActive = ref(false)
     const asc = ref(0)
-    const selectStatus = ref({ title: 'Поступившие', status: '0' })
+    const selectStatus = ref({ title: 'Поступившие', status: '1' })
     const status = [
-      { title: 'Поступившие', status: '0' },
-      { title: 'Принятые', status: '1' },
-      { title: 'Завершенные', status: '2' }
+      { title: 'Поступившие', status: '1' },
+      { title: 'Принятые', status: '2' },
+      { title: 'Завершенные', status: '3' }
     ]
-
     const headers = [
       {
         align: 'start',
@@ -131,8 +119,7 @@ export default {
       { title: 'Дата', key: 'created_at', sortable: false },
       { title: 'Срок', key: 'date_end', sortable: false },
       { title: 'Адресс', key: 'address', sortable: false },
-      { title: 'Тип', key: 'type', sortable: false },
-      { title: 'Статус', key: 'technologists', sortable: false }
+      { title: 'Тип', key: 'type', sortable: false }
     ]
 
     // Computed property to calculate the page count
@@ -163,8 +150,8 @@ export default {
       try {
         const response = await axios.post('orders/list/position', {
           search: search.value,
-          position: 'technologists',
-          position_status: selectStatus.value.status,
+          position: position,
+          position_status: selectStatus.value.status - 1,
           sort: '',
           asc: asc.value,
           page: page.value,
@@ -192,15 +179,11 @@ export default {
     }
 
     const loadData = () => {
-      if (selectStatus.value.status > 0) {
+      if (selectStatus.value.status > 1) {
         takenDataOrders()
       } else {
         receivedDataOrders()
       }
-      // window.scrollTo({
-      //   top: 0,
-      //   behavior: 'smooth'
-      // })
     }
 
     const toggleSorting = () => {
@@ -230,6 +213,15 @@ export default {
       loadData()
     })
 
+    // Compute the route path without the leading slash
+    const routePathWithoutSlash = computed(() => {
+      const routePath = router.path
+      if (routePath.startsWith('/')) {
+        return routePath.substring(1)
+      }
+      return routePath
+    })
+
     return {
       page,
       search,
@@ -246,7 +238,9 @@ export default {
       asc,
       toggleSorting,
       receivedDataOrders,
-      takeOrder
+      takeOrder,
+      routePathWithoutSlash,
+      position
     }
   }
 }

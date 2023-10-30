@@ -144,7 +144,7 @@ export default {
     },
     async updateClient() {
       try {
-        const response = await axios.patch('/api/v1/clients/update', this.editClient)
+        const response = await axios.patch('clients/update', this.editClient)
         console.log('Response:', response.data)
         this.originalData = { ...this.editClient }
         this.formShow = false
