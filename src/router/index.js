@@ -54,9 +54,52 @@ const routes = [
         meta: { requiresAuth: true }
       },
       {
+        path: '/technologists',
+        name: 'technologists',
+        component: () => import('../views/roles/TehnologistView.vue'),
+        meta: { requiresAuth: true }
+      },
+      {
         path: '/page/:id', // :id is the route parameter
         name: 'PageDetail',
         component: () => import('@/views/orders/PageDetail.vue') // Create this component
+      },
+      // cheh
+      {
+        path: '/foreman',
+        component: () => import('../views/workshop/ForemanView.vue'),
+        meta: { requiresAuth: true }
+      },
+      {
+        path: '/painting',
+        component: () => import('../views/workshop/PaintingView.vue'),
+        meta: { requiresAuth: true }
+      },
+      {
+        path: '/sawyer',
+        component: () => import('../views/workshop/SawyerView.vue'),
+        meta: { requiresAuth: true }
+      },
+      {
+        path: '/chpu',
+        component: () => import('../views/workshop/ChpuView.vue'),
+        meta: { requiresAuth: true }
+      },
+      {
+        path: '/collector',
+        component: () => import('../views/workshop/CollectorView.vue'),
+        meta: { requiresAuth: true }
+      },
+      {
+        path: '/edge',
+        component: () => import('../views/workshop/EdgeView.vue'),
+        meta: { requiresAuth: true }
+      },
+
+      {
+        path: '/vacuum',
+        component: () => import('../views/workshop/VacuumView.vue'),
+        meta: { requiresAuth: true }
       }
     ]
   },

@@ -32,7 +32,7 @@
     </template>
 
     <template v-slot:[`item.order_num`]="{ item }">
-      <a :href="'/page/' + item.id" target="_blank">{{ item.order_num }}</a>
+      <a class="order__link" :href="'/page/' + item.id" target="_blank">{{ item.order_num }}</a>
     </template>
 
     <template v-slot:[`item.created_at`]="{ item }">
@@ -43,8 +43,15 @@
       <span>{{ new Date(item.date_end).toLocaleString('ru-RU') }}</span>
     </template>
 
-    <template v-slot:[`item.actions`]="{ item }">
-      <v-btn @click="takeOrder(item.id)">Взять</v-btn>
+    <template v-slot:[`item.metrings`]="{ item }">
+      <v-btn
+        class="takeOrder"
+        :style="{
+          backgroundColor: item.metrings == 0 ? '#2176ff' : '#32d47b'
+        }"
+        @click="takeOrder(item.metrings, item.id)"
+        >{{ item.metrings == 0 ? 'Взять заказ' : 'Заказ взят' }}</v-btn
+      >
     </template>
 
     <template v-slot:bottom>
@@ -74,7 +81,7 @@
       </div>
     </template>
   </v-data-table>
-  {{ selectStatus.status }}
+
   <div v-if="!responseData">Заказов нет</div>
 </template>
 
@@ -82,6 +89,7 @@
 import { ref, computed, watch, onMounted } from 'vue'
 import SearchComponent from '@/components/SearchComponent.vue'
 import axios from '@/axios.js'
+import { useRouter } from 'vue-router'
 
 export default {
   components: {
@@ -89,6 +97,7 @@ export default {
   },
   props: ['value'],
   setup(props, { emit }) {
+    const router = useRouter()
     // eslint-disable-next-line no-unused-vars
     const emitValue = () => {
       emit('update:value', inputValue.value)
@@ -121,29 +130,26 @@ export default {
       { title: 'ФИО', key: 'full_name', sortable: false },
       { title: 'Дата', key: 'created_at', sortable: false },
       { title: 'Срок', key: 'date_end', sortable: false },
-      { title: 'Статус', key: 'status', sortable: false },
       { title: 'Адресс', key: 'address', sortable: false },
-      { title: 'Type', key: 'type', sortable: false },
-      { title: 'Действия', key: 'actions', sortable: false }
+      { title: 'Тип', key: 'type', sortable: false },
+      { title: 'Статус', key: 'metrings', sortable: false }
     ]
 
     // Computed property to calculate the page count
     const pageCount = computed(() => {
       return Math.ceil(total.value / itemsPerPage.value)
     })
+
     // Function to make the API request
-    const getData = async () => {
+    const receivedDataOrders = async () => {
       try {
-        const response = await axios.post('/api/v1/orders/index', {
+        const response = await axios.post('orders/list', {
           search: search.value,
-          status: 0,
+          status: selectStatus.value.status,
           page: page.value,
           sort: '',
           asc: asc.value,
-          count: itemsPerPage.value,
-          position: 'metrings',
-          position_status: selectStatus.value.status,
-          user_id: '16'
+          count: itemsPerPage.value
         })
         total.value = response.data.total
         responseData.value = response.data.data
@@ -153,18 +159,30 @@ export default {
     }
 
     // Function to make the API request
-    const takeOrder = async (order_id) => {
-      const data = {
-        order_id: order_id
-      }
+    const takenDataOrders = async () => {
       try {
-        const response = await axios.get('/api/v1/office/metring/create', {
-          params: data
+        const response = await axios.post('orders/list/position', {
+          search: search.value,
+          position: 'metrings',
+          position_status: selectStatus.value.status,
+          sort: '',
+          asc: asc.value,
+          page: page.value,
+          count: itemsPerPage.value
         })
-        console.log('Response', response.data)
-        getData()
+        total.value = response.data.total
+        responseData.value = response.data.data
       } catch (error) {
         console.error('Error:', error)
+      }
+    }
+
+    // Function to make the API request
+    const takeOrder = (status, order_id) => {
+      if (status == 0) {
+        router.push(`page/${order_id}`)
+      } else {
+        alert('Заказ уже взят')
       }
     }
 
@@ -174,11 +192,15 @@ export default {
     }
 
     const loadData = () => {
-      getData()
-      window.scrollTo({
-        top: 0,
-        behavior: 'smooth'
-      })
+      if (selectStatus.value.status > 0) {
+        takenDataOrders()
+      } else {
+        receivedDataOrders()
+      }
+      // window.scrollTo({
+      //   top: 0,
+      //   behavior: 'smooth'
+      // })
     }
 
     const toggleSorting = () => {
@@ -191,17 +213,17 @@ export default {
         console.log(asc.value)
       }
 
-      getData()
+      loadData()
     }
 
     // Make the API request on component mount
     onMounted(() => {
-      getData()
+      loadData()
     })
 
     watch(search, () => {
       page.value = 1
-      getData()
+      loadData()
     })
 
     watch(selectStatus, () => {
@@ -223,6 +245,7 @@ export default {
       isActive,
       asc,
       toggleSorting,
+      receivedDataOrders,
       takeOrder
     }
   }

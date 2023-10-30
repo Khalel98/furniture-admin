@@ -28,7 +28,7 @@ export default {
   methods: {
     async deleteData() {
       try {
-        const url = '/api/v1/orders/destroy'
+        const url = 'orders/destroy'
         await axios.delete(url, {
           data: {
             id: `${this.dataDefault.id}`

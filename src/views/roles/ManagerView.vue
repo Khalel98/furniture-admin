@@ -34,7 +34,7 @@
     </template>
 
     <template v-slot:[`item.order_num`]="{ item }">
-      <a :href="'/page/' + item.id" target="_blank">{{ item.order_num }}</a>
+      <a class="order__link" :href="'/page/' + item.id" target="_blank">{{ item.order_num }}</a>
     </template>
 
     <template v-slot:[`item.created_at`]="{ item }">
@@ -139,18 +139,15 @@ export default {
       return Math.ceil(total.value / itemsPerPage.value)
     })
     // Function to make the API request
-    const getData = async () => {
+    const receivedDataOrders = async () => {
       try {
-        const response = await axios.post('/api/v1/orders/index', {
+        const response = await axios.post('orders/list', {
           search: search.value,
           status: selectStatus.value.status,
           page: page.value,
           sort: '',
           asc: asc.value,
-          count: itemsPerPage.value,
-          position: '',
-          position_status: '',
-          user_id: ''
+          count: itemsPerPage.value
         })
         total.value = response.data.total
         responseData.value = response.data.data
@@ -164,7 +161,7 @@ export default {
     }
 
     const loadData = () => {
-      getData()
+      receivedDataOrders()
       window.scrollTo({
         top: 0,
         behavior: 'smooth'
@@ -172,7 +169,7 @@ export default {
     }
 
     const saveData = () => {
-      getData()
+      receivedDataOrders()
     }
 
     const toggleSorting = () => {
@@ -185,17 +182,17 @@ export default {
         console.log(asc.value)
       }
 
-      getData()
+      receivedDataOrders()
     }
 
     // Make the API request on component mount
     onMounted(() => {
-      getData()
+      receivedDataOrders()
     })
 
     watch(search, () => {
       page.value = 1
-      getData()
+      receivedDataOrders()
     })
 
     watch(selectStatus, () => {

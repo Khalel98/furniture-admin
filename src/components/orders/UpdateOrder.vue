@@ -120,7 +120,7 @@ export default {
       }
 
       try {
-        const response = await axios.patch('/api/v1/orders/update', data)
+        const response = await axios.patch('orders/update', data)
         console.log('Response:', response.data)
         this.closeModal()
         this.$emit('save')

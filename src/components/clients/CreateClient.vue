@@ -122,7 +122,7 @@ export default {
         Authorization: `Bearer ${this.$store.getters.activeToken}`
       }
       try {
-        const response = await axios.get('/api/v1/clients/create', {
+        const response = await axios.get('clients/create', {
           headers,
           params: data
         })

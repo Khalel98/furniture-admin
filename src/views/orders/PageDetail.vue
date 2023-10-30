@@ -1,9 +1,18 @@
 <template>
   <div class="order">
     <div class="order__title">Заказ</div>
-
+    <CreateCard :orderId="this.orderId" @updateOrder="getData" />
+    {{ this.orderStatus }}
+    <!-- <v-btn
+      v-if="this.order.order.status == 1"
+      class="addCard"
+      style="margin-bottom: 20px"
+      @click="dialog = true"
+      >Принять</v-btn
+    > -->
     <div class="section__row">
       <div class="order__item" v-for="item in data" :key="item.id">
+        <DeleteCard :cardId="item.id" @updateOrder="getData" />
         <div class="order__item__position">
           {{ item.position_name }}
         </div>
@@ -13,8 +22,25 @@
         <div class="order__item__text"><strong>Дата принятия:</strong> {{ item.take_date }}</div>
         <div class="order__item__text">
           <strong>Файл:</strong>
-          <a v-if="item.file" :href="item.file">{{ item.file.slice(-20) }}</a>
+          <a v-if="item.file" :href="item.file">Скачать</a>
           <span v-if="!item.file">Отсутствует</span>
+        </div>
+
+        <br />
+
+        <div>
+          <TakeCard
+            :cardId="item.id"
+            :position="item.position"
+            @updateOrder="getData"
+            v-if="item.status == 0"
+          />
+          <DropCard
+            :cardId="item.id"
+            :position="item.position"
+            @updateOrder="getData"
+            v-if="item.status == 1"
+          />
         </div>
 
         <div class="order__item__role">
@@ -46,7 +72,7 @@
           <div class="order__item__role__name">{{ item.user_name }}</div>
         </div>
 
-        <div class="order__item__actions">
+        <div class="order__item__actions" v-if="item.status > 0">
           <v-icon
             size="small"
             class="me-2"
@@ -63,7 +89,12 @@
           >
             mdi mdi-content-save-outline
           </v-icon>
-          <v-icon size="small" class="me-2" v-if="item.file" @click="this.delete(item.position)">
+          <v-icon
+            size="small"
+            class="me-2"
+            v-if="item.file"
+            @click="this.delete(item.position, item.id)"
+          >
             mdi-delete
           </v-icon>
         </div>
@@ -78,12 +109,17 @@
         <v-file-input chips multiple v-model="selectedFiles" label="Файл"></v-file-input>
 
         <div class="section__modal__action">
-          <v-btn color="green-darken-1" variant="text" @click="close"> Отмена </v-btn>
-          <v-btn color="green-darken-1" variant="text" @click="save" v-if="this.type == 'save'">
+          <v-btn class="section__modal__btn cancel" @click="close"> Отмена </v-btn>
+          <v-btn class="section__modal__btn aprove" @click="save" v-if="this.type == 'save'">
             Сохранить
           </v-btn>
 
-          <v-btn color="green-darken-1" variant="text" @click="update" v-if="this.type == 'edit'">
+          <v-btn
+            style="width: 150px"
+            class="section__modal__btn check"
+            @click="update"
+            v-if="this.type == 'edit'"
+          >
             Редактировать
           </v-btn>
         </div>
@@ -94,16 +130,30 @@
 
 <script>
 import axios from '@/axios.js'
+import CreateCard from '@/components/cards/CreateCard.vue'
+import DropCard from '@/components/cards/DropCard.vue'
+import TakeCard from '@/components/cards/TakeCard.vue'
+import DeleteCard from '@/components/cards/DeleteCard.vue'
 
 export default {
   name: 'PageDetail',
+  components: {
+    CreateCard,
+    DropCard,
+    TakeCard,
+    DeleteCard
+  },
   data() {
     return {
       data: null,
       dialog: false,
       selectedFiles: [],
       position: null,
-      type: null
+      type: null,
+      order: null,
+      orderStatus: null,
+      send: 'send',
+      completed: 'completed'
     }
   },
   methods: {
@@ -111,13 +161,40 @@ export default {
       const data = {
         id: this.orderId
       }
-
       try {
-        const response = await axios.get('/api/v1/orders/positions', {
+        const response = await axios.get('orders/list/cards', {
           params: data
         })
         console.log('Response:', response.data)
         this.data = response.data
+      } catch (error) {
+        console.error('Error:', error)
+        alert('Что-то пошло не так')
+      }
+    },
+
+    async getOrder() {
+      const data = {
+        id: this.orderId
+      }
+
+      try {
+        const response = await axios.get('orders/show', {
+          params: data
+        })
+        console.log('Response:', response.data)
+        this.order = response.data
+        this.orderStatus = response.data.order.orderStatus
+      } catch (error) {
+        console.error('Error:', error)
+        alert('Что-то пошло не так')
+      }
+    },
+
+    async directorAprove() {
+      try {
+        const response = await axios.get(`orders/send/${this.orderId}`)
+        console.log('Response:', response.data)
       } catch (error) {
         console.error('Error:', error)
         alert('Что-то пошло не так')
@@ -145,13 +222,13 @@ export default {
       formData.append('id', this.orderId) // Use the value from the 'technologists' object
 
       try {
-        const response = await axios.post('/api/v1/file/save', formData, {
+        const response = await axios.post('file/save', formData, {
           headers: {
             'Content-Type': 'multipart/form-data'
           }
         })
 
-        console.log('Files uploaded successfully:', response.data)
+        console.log('Files uploaded successfully:', response)
         this.close()
       } catch (error) {
         console.error('File upload failed:', error)
@@ -169,7 +246,7 @@ export default {
       formData.append('id', this.orderId) // Use the value from the 'technologists' object
 
       try {
-        const response = await axios.post('/api/v1/file/update', formData, {
+        const response = await axios.post('file/update', formData, {
           headers: {
             'Content-Type': 'multipart/form-data'
           }
@@ -188,13 +265,13 @@ export default {
       this.getData()
     },
 
-    async delete(position) {
+    async delete(position, id) {
       const data = {
         dir: position,
-        id: this.orderId
+        id: id
       }
       try {
-        const response = await axios.get('/api/v1/file/deleted', {
+        const response = await axios.get('file/deleted', {
           params: data
         })
         console.log('Response:', response.data)
@@ -213,11 +290,12 @@ export default {
   },
   mounted() {
     this.getData()
+    this.getOrder()
   }
 }
 </script>
 
-<style>
+<style lang="scss">
 .my-custom-class {
   padding-top: 10px !important;
 }
