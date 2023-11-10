@@ -1,5 +1,4 @@
 <template>
-  {{ position }}
   <div class="section__row">
     <SearchComponent :value="search" @update:value="search = $event" />
   </div>
@@ -130,31 +129,12 @@ export default {
     // Function to make the API request
     const receivedDataOrders = async () => {
       try {
-        const response = await axios.post('orders/list', {
+        const response = await axios.post('order/list', {
           search: search.value,
           status: selectStatus.value.status,
           page: page.value,
           sort: '',
           asc: asc.value,
-          count: itemsPerPage.value
-        })
-        total.value = response.data.total
-        responseData.value = response.data.data
-      } catch (error) {
-        console.error('Error:', error)
-      }
-    }
-
-    // Function to make the API request
-    const takenDataOrders = async () => {
-      try {
-        const response = await axios.post('orders/list/position', {
-          search: search.value,
-          position: position,
-          position_status: selectStatus.value.status - 1,
-          sort: '',
-          asc: asc.value,
-          page: page.value,
           count: itemsPerPage.value
         })
         total.value = response.data.total
@@ -179,11 +159,7 @@ export default {
     }
 
     const loadData = () => {
-      if (selectStatus.value.status > 1) {
-        takenDataOrders()
-      } else {
-        receivedDataOrders()
-      }
+      receivedDataOrders()
     }
 
     const toggleSorting = () => {
@@ -213,15 +189,6 @@ export default {
       loadData()
     })
 
-    // Compute the route path without the leading slash
-    const routePathWithoutSlash = computed(() => {
-      const routePath = router.path
-      if (routePath.startsWith('/')) {
-        return routePath.substring(1)
-      }
-      return routePath
-    })
-
     return {
       page,
       search,
@@ -239,7 +206,6 @@ export default {
       toggleSorting,
       receivedDataOrders,
       takeOrder,
-      routePathWithoutSlash,
       position
     }
   }

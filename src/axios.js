@@ -5,7 +5,7 @@ const apiKey = 'https://api.app-mebel.kz/api/v1'
 
 const instance = axios.create({
   baseURL: apiKey,
-  timeout: 5000,
+  timeout: 100000,
   headers: {
     'Content-Type': 'application/json'
   }

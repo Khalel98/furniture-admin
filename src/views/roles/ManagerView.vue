@@ -34,7 +34,7 @@
     </template>
 
     <template v-slot:[`item.order_num`]="{ item }">
-      <a class="order__link" :href="'/page/' + item.id" target="_blank">{{ item.order_num }}</a>
+      <a class="order__link" :href="'/page/' + item.id">{{ item.order_num }}</a>
     </template>
 
     <template v-slot:[`item.created_at`]="{ item }">
@@ -114,7 +114,7 @@ export default {
     const status = [
       { title: 'Поступившие', status: '0' },
       { title: 'Принятые', status: '1' },
-      { title: 'Завершенные', status: '2' }
+      { title: 'Завершенные', status: '3' }
     ]
 
     const headers = [
@@ -141,7 +141,7 @@ export default {
     // Function to make the API request
     const receivedDataOrders = async () => {
       try {
-        const response = await axios.post('orders/list', {
+        const response = await axios.post('order/list', {
           search: search.value,
           status: selectStatus.value.status,
           page: page.value,

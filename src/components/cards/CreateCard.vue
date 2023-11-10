@@ -83,8 +83,13 @@ export default {
       }
     },
     async getPositions() {
+      const data = {
+        type: 'factory' // factory or empty
+      }
       try {
-        const response = await axios.get('factory/position')
+        const response = await axios.get('factory/position', {
+          params: data
+        })
         console.log('Response:', response.data)
         this.positionItems = response.data
         this.isLoadingPositions = false

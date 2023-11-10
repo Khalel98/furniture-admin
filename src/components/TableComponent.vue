@@ -1,5 +1,5 @@
 <template>
-  {{ position }}
+  <!-- {{ position }} -->
   <div class="section__row">
     <SearchComponent :value="search" @update:value="search = $event" />
   </div>
@@ -17,7 +17,7 @@
     ></v-select>
   </div>
 
-  <div class="order">
+  <div class="order" v-if="responseData">
     <div class="section__row">
       <div class="order__item" v-for="item in responseData" :key="item.id">
         <div class="order__item__position">
@@ -118,11 +118,11 @@ export default {
     const itemsPerPage = ref(10)
     const total = ref(null)
     const asc = ref(0)
-    const selectStatus = ref({ title: 'Принятые', status: '0' })
+    const selectStatus = ref({ title: 'Принятые', status: '0', globalStatus: '2' })
     const status = [
-      { title: 'Принятые', status: '0' },
-      { title: 'Обработке', status: '1' },
-      { title: 'Завершенные', status: '2' }
+      { title: 'Принятые', status: '0', globalStatus: '2' },
+      { title: 'Обработке', status: '1', globalStatus: '2' },
+      { title: 'Завершенные', status: '2', globalStatus: '3' }
     ]
 
     // Computed property to calculate the page count
@@ -133,9 +133,10 @@ export default {
     // Function to make the API request
     const takenDataOrders = async () => {
       try {
-        const response = await axios.post('orders/list/position', {
+        const response = await axios.post('order/list/position', {
           search: search.value,
           position: position,
+          status: selectStatus.value.globalStatus,
           position_status: selectStatus.value.status,
           sort: '',
           asc: asc.value,
@@ -169,6 +170,7 @@ export default {
     })
 
     watch(selectStatus, () => {
+      responseData.value = null
       loadData()
     })
 

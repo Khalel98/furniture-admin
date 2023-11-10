@@ -1,7 +1,10 @@
 <template>
   <div class="sidebar__menu">
-    <img src="@/assets/logo.png" alt="" />
-    <v-app-bar-nav-icon @click="openSideBar"></v-app-bar-nav-icon>
+    <div class="sidebar__menu__logo">
+      <img src="@/assets/logo.svg" alt="" />
+      <div class="sidebar__menu__text">APP</div>
+    </div>
+    <v-app-bar-nav-icon color="white" @click="openSideBar"></v-app-bar-nav-icon>
   </div>
 </template>
 

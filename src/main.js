@@ -30,5 +30,6 @@ createApp(App)
   .component('VDataTable', VDataTable)
   .component('VDatePicker', VDatePicker)
   .component('VueDatePicker', VueDatePicker)
+
   .use(store)
   .mount('#app')

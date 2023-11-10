@@ -9,12 +9,32 @@ const routes = [
     children: [
       {
         path: '/main',
-        component: () => import('../views/MainView.vue'),
+        component: () => import('../views/director/MainView.vue'),
         meta: { requiresAuth: true }
       },
       {
-        path: '/cabinet',
-        component: () => import('../views/CabinetView.vue'),
+        path: '/staff',
+        component: () => import('../views/director/StaffView.vue'),
+        meta: { requiresAuth: true }
+      },
+      {
+        path: '/orders',
+        component: () => import('../views/director/OrdersView.vue'),
+        meta: { requiresAuth: true }
+      },
+      {
+        path: '/client',
+        component: () => import('../views/director/ClientView.vue'),
+        meta: { requiresAuth: true }
+      },
+      {
+        path: '/calendar',
+        component: () => import('../views/director/CalendarView.vue'),
+        meta: { requiresAuth: true }
+      },
+      {
+        path: '/video',
+        component: () => import('../views/director/VideoView.vue'),
         meta: { requiresAuth: true }
       },
       {
@@ -30,7 +50,7 @@ const routes = [
         meta: { requiresAuth: true }
       },
       {
-        path: '/director',
+        path: '/dir',
         name: 'director',
         component: () => import('../views/roles/DirectorView.vue'),
         meta: { requiresAuth: true }
@@ -62,7 +82,7 @@ const routes = [
       {
         path: '/page/:id', // :id is the route parameter
         name: 'PageDetail',
-        component: () => import('@/views/orders/PageDetail.vue') // Create this component
+        component: () => import('@/views/orders/OrderPage.vue') // Create this component
       },
       // cheh
       {
@@ -99,6 +119,11 @@ const routes = [
       {
         path: '/vacuum',
         component: () => import('../views/workshop/VacuumView.vue'),
+        meta: { requiresAuth: true }
+      },
+      {
+        path: '/reg-me',
+        component: () => import('../views/RegMe.vue'),
         meta: { requiresAuth: true }
       }
     ]
