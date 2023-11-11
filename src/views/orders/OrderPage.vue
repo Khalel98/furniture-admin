@@ -153,6 +153,8 @@
         </div>
       </div>
     </div>
+
+    <ShowComment :order_id="orderId" />
   </div>
 
   <v-row justify="center">
@@ -187,6 +189,7 @@ import CreateCard from '@/components/cards/CreateCard.vue'
 import DropCard from '@/components/cards/DropCard.vue'
 import TakeCard from '@/components/cards/TakeCard.vue'
 import DeleteCard from '@/components/cards/DeleteCard.vue'
+import ShowComment from '@/components/comment/ShowComment.vue'
 
 export default {
   name: 'PageDetail',
@@ -194,7 +197,8 @@ export default {
     CreateCard,
     DropCard,
     TakeCard,
-    DeleteCard
+    DeleteCard,
+    ShowComment
   },
   data() {
     return {

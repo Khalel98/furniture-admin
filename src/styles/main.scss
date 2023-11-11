@@ -81,7 +81,7 @@ $md4: 479.98px;
   background: $black !important;
 }
 
-header {
+.v-toolbar.v-toolbar--density-default.v-theme--light.v-locale--is-ltr.v-app-bar {
   background: $black !important;
   border: none;
 }
@@ -179,7 +179,7 @@ header {
 }
 
 .mainContent {
-  background: #f0f2f5;
+  background: #f0f2f5 !important;
 
   height: 100%;
   &__body {
@@ -188,10 +188,9 @@ header {
 }
 
 .exit {
-  width: calc(100% - 20px);
-  margin: 10px;
-  bottom: 0;
+  width: 100%;
   cursor: pointer;
+  margin-bottom: 10px;
 }
 
 #page-container {
@@ -780,4 +779,84 @@ header {
 .v-table__wrapper {
   // border-top-left-radius: 10px !important;
   // border-top-right-radius: 10px !important;
+}
+
+.section__comments {
+  margin-top: 50px;
+  margin-bottom: 30px;
+  &__title {
+    font-size: 30px;
+    font-weight: 600;
+    @media (max-width: ($md4)) {
+      font-size: 14px;
+    }
+  }
+
+  &__add {
+    margin: 20px 0;
+    &__input {
+    }
+    &__action.v-btn {
+      background: $green;
+      width: 150px;
+      font-size: 16px;
+      color: $white;
+      border-radius: 4px;
+      text-transform: none;
+      font-family: 'Roboto', sans-serif;
+      letter-spacing: 0;
+    }
+  }
+  &__item {
+    margin-top: 20px;
+    &__header {
+      display: flex;
+      justify-content: space-between;
+      flex-wrap: wrap;
+      font-size: 18px;
+      line-height: 18px;
+      @media (max-width: ($md4)) {
+        font-size: 14px;
+      }
+      &__user {
+        display: flex;
+      }
+    }
+    &__name {
+      margin-right: 10px;
+      font-weight: 500;
+      color: $blue;
+    }
+    &__position {
+      font-weight: 500;
+      margin-right: 3px;
+    }
+    &__time {
+      font-size: 14px;
+      color: #756c6c;
+    }
+    &__comment {
+      margin-top: 10px;
+      background: rgba(61, 232, 31, 0.253);
+      padding: 20px;
+      border-radius: 10px;
+      font-size: 18px;
+      line-height: 18px;
+      position: relative;
+      word-break: break-all;
+      width: 100%;
+      &__text {
+        width: calc(100% - 25px);
+      }
+      @media (max-width: ($md4)) {
+        font-size: 14px;
+      }
+      &__close {
+        position: absolute;
+        right: 20px;
+        top: 20px;
+        cursor: pointer;
+      }
+    }
+  }
 }

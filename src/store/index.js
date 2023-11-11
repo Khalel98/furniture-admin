@@ -6,6 +6,7 @@ export default createStore({
     token: localStorage.getItem('token') || null,
     user: localStorage.getItem('name') || null,
     connection: localStorage.getItem('connection') || null,
+    user_id: localStorage.getItem('user_id') || null,
     role: JSON.parse(localStorage.getItem('role')) || null, // Parse the sto
     switchModel: localStorage.getItem('switchModel') === 'true' || false // Y // Initial value
   },
@@ -26,6 +27,10 @@ export default createStore({
       state.connection = connection
       localStorage.setItem('connection', connection)
     },
+    setUserId(state, user_id) {
+      state.user_id = user_id
+      localStorage.setItem('user_id', user_id)
+    },
 
     updateSwitchModel(state) {
       state.switchModel = !state.switchModel
@@ -37,11 +42,12 @@ export default createStore({
       // eslint-disable-next-line no-useless-catch
       try {
         const response = await axios.post('login', credentials)
-        const { token, name, role, connection } = response.data
+        const { token, name, role, connection, user_id } = response.data
         commit('setToken', token)
         commit('setUser', name)
         commit('setRole', role)
         commit('setConnection', connection)
+        commit('setUserId', user_id)
       } catch (error) {
         throw error
       }
@@ -58,11 +64,13 @@ export default createStore({
         commit('setUser', null)
         commit('setRole', null)
         commit('setConnection', null)
+        commit('setUserId', null)
 
         localStorage.removeItem('token')
         localStorage.removeItem('name')
         localStorage.removeItem('role')
         localStorage.removeItem('connection')
+        localStorage.removeItem('user_id')
       } catch (error) {
         localStorage.removeItem('token')
         // location.reload()
@@ -80,9 +88,13 @@ export default createStore({
     currentUser(state) {
       return state.user
     },
+    currentUserId(state) {
+      return state.user_id
+    },
     currentRole(state) {
       return state.role
     },
+
     currentConnection(state) {
       return state.connection
     }

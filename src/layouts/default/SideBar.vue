@@ -55,7 +55,7 @@
 
           <router-link to="/staff" class="sidebar__link" v-if="temp.includes('admin')">
             <v-icon class="sidebar__link__icon" icon="mdi mdi-account-multiple" />
-            <span class="sidebar__link__title"> Сотрудники</span>
+            <span class="sidebar__link__title"> Посещения</span>
           </router-link>
 
           <router-link
@@ -109,7 +109,7 @@ const singleNavigationLinks = [
   {
     to: '/staff',
     icon: 'mdi mdi-account-group',
-    title: 'Сотрудники'
+    title: 'Посещения'
   },
   {
     to: '/orders',
