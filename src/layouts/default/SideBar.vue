@@ -42,15 +42,22 @@
               </v-list-item>
             </template>
 
-            <router-link
-              v-for="link in userRole"
-              :to="link.to"
-              :key="link.to"
-              class="sidebar__link"
-            >
-              <v-icon class="sidebar__link__icon" :icon="link.icon" />
-              <span class="sidebar__link__title">{{ link.title }}</span>
-            </router-link>
+            <div v-for="link in userRole" :key="link.to">
+              <router-link
+                v-if="link.type == 'work_shop'"
+                class="sidebar__link"
+                :to="{ name: 'workshop', params: { position: link.to.replace('/', '') } }"
+                @click="go(link.to.replace('/', ''))"
+              >
+                <v-icon class="sidebar__link__icon" :icon="link.icon" />
+                <span class="sidebar__link__title">{{ link.title }}</span>
+              </router-link>
+
+              <router-link v-else :to="link.to" class="sidebar__link">
+                <v-icon class="sidebar__link__icon" :icon="link.icon" />
+                <span class="sidebar__link__title">{{ link.title }}</span>
+              </router-link>
+            </div>
           </v-list-group>
 
           <router-link to="/staff" class="sidebar__link" v-if="temp.includes('admin')">
@@ -58,10 +65,25 @@
             <span class="sidebar__link__title"> Посещения</span>
           </router-link>
 
+          <router-link to="/positions" class="sidebar__link" v-if="temp.includes('admin')">
+            <v-icon class="sidebar__link__icon" icon="mdi mdi-account-edit-outline" />
+            <span class="sidebar__link__title"> Позиции</span>
+          </router-link>
+
           <router-link
             :to="userRole[0].to"
             class="sidebar__link"
-            v-if="temp.length == 1 && !temp.includes('dir')"
+            v-if="temp.length == 1 && !temp.includes('dir') && type[0] != 'work_shop'"
+          >
+            <v-icon class="sidebar__link__icon" icon="mdi mdi-podcast" />
+            <span class="sidebar__link__title">{{ userRole[0].title }}</span>
+          </router-link>
+
+          <router-link
+            :to="'/workshop/' + userRole[0].to.replace('/', '')"
+            class="sidebar__link"
+            v-if="temp.length == 1 && !temp.includes('dir') && type[0] == 'work_shop'"
+            @click="go(userRole[0].to.replace('/', ''))"
           >
             <v-icon class="sidebar__link__icon" icon="mdi mdi-podcast" />
             <span class="sidebar__link__title">{{ userRole[0].title }}</span>
@@ -98,7 +120,8 @@ const router = useRouter()
 const userName = computed(() => store.getters.currentUser)
 const userRole = computed(() => store.getters.currentRole) // Add this line to get the user's role from the store
 const temp = computed(() => store.getters.currentRole.map((item) => item.to.replace('/', ''))) // Add this line to get the user's role from the store
-
+const type = computed(() => store.getters.currentRole.map((item) => item.type)) // Add this line to get the user's role from the store
+console.log(type.value)
 const drawer = ref(null)
 const singleNavigationLinks = [
   {
@@ -106,11 +129,7 @@ const singleNavigationLinks = [
     icon: 'mdi mdi-home-analytics',
     title: 'Главная'
   },
-  {
-    to: '/staff',
-    icon: 'mdi mdi-account-group',
-    title: 'Посещения'
-  },
+
   {
     to: '/orders',
     icon: 'mdi mdi-order-bool-descending-variant',
@@ -152,6 +171,11 @@ const handleResize = () => {
   }
 }
 
+const go = (position) => {
+  router.push(`/workshop/${position}`) // -> /user/eduardo
+  console.log('zb')
+}
+
 // Add a resize event listener when the component is mounted
 onMounted(() => {
   window.addEventListener('resize', handleResize)
@@ -166,7 +190,6 @@ onBeforeUnmount(() => {
 const logout = async () => {
   try {
     await store.dispatch('logout')
-    router.push('/login')
   } catch (error) {
     console.error(error)
   }

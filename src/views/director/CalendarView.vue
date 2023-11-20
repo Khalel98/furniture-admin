@@ -1,12 +1,14 @@
 <template>
-  <Qalendar
-    :selected-date="this.today"
-    :events="events"
-    :config="config"
-    @updated-period="handleUpdate"
-    @updated-mode="handleUpdateMode"
-    :is-loading="loader"
-  />
+  <div class="light__theme" style="color-scheme: light">
+    <Qalendar
+      :selected-date="this.today"
+      :events="events"
+      :config="config"
+      @updated-period="handleUpdate"
+      @updated-mode="handleUpdateMode"
+      :is-loading="loader"
+    />
+  </div>
 </template>
 
 <script>
@@ -25,8 +27,13 @@ export default {
       today: new Date(),
       events: [],
       config: {
+        locale: 'ru-RU',
         // see configuration section
-        defaultMode: 'month'
+        defaultMode: 'month',
+        style: {
+          // When adding a custom font, please also set the fallback(s) yourself
+          fontFamily: 'Roboto'
+        }
       }
     }
   },
@@ -86,4 +93,9 @@ export default {
 
 <style>
 @import 'qalendar/dist/style.css';
+
+.light__theme {
+  background-color: #f0f2f5;
+  color: #000000;
+}
 </style>

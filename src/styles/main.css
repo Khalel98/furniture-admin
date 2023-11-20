@@ -754,6 +754,18 @@ body {
   text-align: center;
   border-radius: 10px;
 }
+@media (max-width: 767.98px) {
+  .section__statistics__item {
+    width: 47%;
+    margin-bottom: 10px;
+  }
+}
+@media (max-width: 479.98px) {
+  .section__statistics__item {
+    width: 100%;
+    margin-bottom: 10px;
+  }
+}
 .section__statistics__item__title {
   font-size: 20px;
   font-weight: 500;
@@ -859,4 +871,23 @@ body {
   right: 20px;
   top: 20px;
   cursor: pointer;
+}
+
+.section__tablo {
+  padding: 20px;
+}
+
+.section__charts {
+  display: flex;
+  justify-content: space-between;
+  flex-wrap: wrap;
+}
+
+.section__charts__item {
+  width: 47%;
+}
+@media (max-width: 991.98px) {
+  .section__charts__item {
+    width: 100%;
+  }
 }/*# sourceMappingURL=main.css.map */

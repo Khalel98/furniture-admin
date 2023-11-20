@@ -1,5 +1,7 @@
 <template>
   <div class="order">
+    <div class="back__action" @click="goBack">&#8592; Назад</div>
+
     <div class="order__title">Заказ</div>
     <div
       class="section__row"
@@ -56,7 +58,17 @@
           "
         >
           <strong>Файл:</strong>
-          <a v-if="item.file" :href="item.file">Скачать</a>
+
+          <!-- <router-link v-if="item.file" :to="this.orderId + '/' + item.position"
+            >Перейти</router-link
+          > -->
+          <router-link
+            v-if="item.file"
+            style="color: #2176ff; text-decoration: none"
+            :to="{ name: 'files', params: { id: this.orderId, position: item.position } }"
+          >
+            Открыть</router-link
+          >
           <span v-if="!item.file">Отсутствует</span>
         </div>
 
@@ -129,26 +141,10 @@
           <v-icon
             size="small"
             class="me-2"
-            v-if="item.file"
-            @click="setPostion(item.position, 'edit')"
-          >
-            mdi-pencil
-          </v-icon>
-          <v-icon
-            size="small"
-            class="me-2"
             v-if="!item.file"
             @click="setPostion(item.position, 'save')"
           >
             mdi mdi-content-save-outline
-          </v-icon>
-          <v-icon
-            size="small"
-            class="me-2"
-            v-if="item.file"
-            @click="this.delete(item.position, item.id)"
-          >
-            mdi-delete
           </v-icon>
         </div>
       </div>
@@ -167,15 +163,6 @@
           <v-btn class="section__modal__btn cancel" @click="close"> Отмена </v-btn>
           <v-btn class="section__modal__btn aprove" @click="save" v-if="this.type == 'save'">
             Сохранить
-          </v-btn>
-
-          <v-btn
-            style="width: 150px"
-            class="section__modal__btn check"
-            @click="update"
-            v-if="this.type == 'edit'"
-          >
-            Редактировать
           </v-btn>
         </div>
       </div>
@@ -278,8 +265,8 @@ export default {
       })
 
       // Add technologists values to the FormData
-      formData.append('dir', this.position) // Use the value from the 'technologists' object
-      formData.append('id', this.orderId) // Use the value from the 'technologists' object
+      formData.append('order_id', this.orderId) // Use the value from the 'technologists' object
+      formData.append('position', this.position) // Use the value from the 'technologists' object
 
       try {
         const response = await axios.post('file/save', formData, {
@@ -295,52 +282,14 @@ export default {
         this.close()
       }
     },
-    async update() {
-      const formData = new FormData()
-      this.selectedFiles.forEach((file, index) => {
-        formData.append(`file${index}`, file)
-      })
 
-      // Add technologists values to the FormData
-      formData.append('dir', this.position) // Use the value from the 'technologists' object
-      formData.append('id', this.orderId) // Use the value from the 'technologists' object
-
-      try {
-        const response = await axios.post('file/update', formData, {
-          headers: {
-            'Content-Type': 'multipart/form-data'
-          }
-        })
-
-        console.log('Files uploaded successfully:', response.data)
-        this.close()
-      } catch (error) {
-        console.error('File upload failed:', error)
-        alert('Что-то пошло не так')
-      }
-    },
     close() {
       ;(this.position = null), (this.dialog = false)
       this.selectedFiles = null
       this.getData()
     },
-
-    async delete(position, id) {
-      const data = {
-        dir: position,
-        id: id
-      }
-      try {
-        const response = await axios.get('file/deleted', {
-          params: data
-        })
-        console.log('Response:', response.data)
-        this.getData()
-      } catch (error) {
-        console.error('Error:', error)
-        alert(error.response.data.message || 'Что-то пошло не так')
-        this.getData()
-      }
+    goBack() {
+      this.$router.go(-1) // Перейти на один шаг назад в истории маршрута
     }
   },
   computed: {

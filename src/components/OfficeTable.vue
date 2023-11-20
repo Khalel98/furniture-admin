@@ -35,6 +35,10 @@
       <a class="order__link" :href="'/page/' + item.id">{{ item.order_num }}</a>
     </template>
 
+    <template v-slot:[`item.address`]="{ item }">
+      <span>{{ item.district + ' ' + item.address }}</span>
+    </template>
+
     <template v-slot:[`item.created_at`]="{ item }">
       <span>{{ new Date(item.created_at).toLocaleString('ru-RU') }}</span>
     </template>

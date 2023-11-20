@@ -5,6 +5,20 @@
   <v-form ref="form">
     <v-row>
       <v-col cols="12" sm="6" md="6">
+        <v-select
+          v-model="selectDistrict"
+          :items="districtItems"
+          :rules="[(v) => !!v || 'Выберите район']"
+          item-title="name"
+          item-value="position"
+          label="Район"
+          variant="outlined"
+          :loading="isLoadingDistricts"
+          :disabled="isSelectDisabledDistricts"
+          return-object
+        ></v-select>
+      </v-col>
+      <v-col cols="12" sm="6" md="6">
         <v-text-field
           variant="outlined"
           v-model="dataDefault.address"
@@ -82,6 +96,10 @@ export default {
   },
   data() {
     return {
+      selectDistrict: null,
+      isLoadingDistricts: true,
+      isSelectDisabledDistricts: true,
+      districtItems: [],
       dataDefault: {
         client_id: this.clientData.id,
         address: '',
@@ -119,6 +137,7 @@ export default {
       const data = {
         client_id: this.dataDefault.client_id,
         address: this.dataDefault.address,
+        district: this.selectDistrict,
         date_end: this.dataDefault.date_end,
         type: this.dataDefault.type,
         sum: this.dataDefault.sum,
@@ -140,6 +159,24 @@ export default {
       }
     },
 
+    async getPositions() {
+      const data = {
+        region: 2,
+        type: 1
+      }
+      try {
+        const response = await axios.get('location/list', {
+          params: data
+        })
+        console.log('Response:', response.data)
+        this.districtItems = response.data
+        this.isLoadingDistricts = false
+        this.isSelectDisabledDistricts = false
+      } catch (error) {
+        console.error('Error:', error)
+      }
+    },
+
     closeModal() {
       this.$emit('closeModal')
       console.log('close')
@@ -151,6 +188,9 @@ export default {
     errorStatus() {
       document.getElementsByClassName('dp__input')[0].style.border = '1px solid #b00020'
     }
+  },
+  mounted() {
+    this.getPositions()
   }
 }
 </script>

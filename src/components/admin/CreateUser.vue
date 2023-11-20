@@ -70,7 +70,9 @@
               <v-text-field
                 :rules="[
                   (v) => !!v || 'Введите Почту',
-                  (v) => /^[a-z.-]+@[a-z.-]+\.[a-z]+$/i.test(v) || 'Почта введена некоректно'
+                  (v) =>
+                    /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/i.test(v) ||
+                    'Почта введена некорректно'
                 ]"
                 variant="outlined"
                 v-model="newClient.email"

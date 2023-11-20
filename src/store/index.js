@@ -1,5 +1,6 @@
 import { createStore } from 'vuex'
 import axios from '@/axios.js'
+import router from '@/router'
 
 export default createStore({
   state: {
@@ -71,10 +72,12 @@ export default createStore({
         localStorage.removeItem('role')
         localStorage.removeItem('connection')
         localStorage.removeItem('user_id')
+        router.push('/login')
       } catch (error) {
         localStorage.removeItem('token')
+        router.push('/login')
         // location.reload()
-        throw error
+        console.error(error)
       }
     }
   },

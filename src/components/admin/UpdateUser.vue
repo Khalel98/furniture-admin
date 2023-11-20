@@ -56,7 +56,12 @@
 
             <v-col cols="12" sm="6" md="6">
               <v-text-field
-                :rules="[(v) => !!v || 'Введите Почту']"
+                :rules="[
+                  (v) => !!v || 'Введите Почту',
+                  (v) =>
+                    /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/i.test(v) ||
+                    'Почта введена некорректно'
+                ]"
                 variant="outlined"
                 v-model="userData.email"
                 label="Почта"

@@ -140,6 +140,8 @@ export default {
         console.log(role)
         if (role == '/dir') {
           this.$router.push(`/main`)
+        } else if (this.currentRole.length == 1 && this.currentRole[0].type == 'work_shop') {
+          this.$router.push(`/workshop${role}`) // -> /user/eduardo
         } else {
           this.$router.push(`${role}`)
         }

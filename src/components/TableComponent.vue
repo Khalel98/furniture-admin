@@ -21,10 +21,12 @@
     <div class="section__row">
       <div class="order__item" v-for="item in responseData" :key="item.id">
         <div class="order__item__position">
-          {{ item.order_num }}
+          <a class="order__link" :href="'/page/' + item.id">{{ item.order_num }}</a>
         </div>
         <div class="order__item__text"><strong>Клиент: </strong>{{ item.full_name }}</div>
-        <div class="order__item__text"><strong>Адрес: </strong>{{ item.address }}</div>
+        <div class="order__item__text">
+          <strong>Адрес: </strong>{{ item.district + ' ' + item.address }}
+        </div>
         <div class="order__item__text">
           <strong>Дата создания: </strong>{{ new Date(item.created_at).toLocaleString('ru-RU') }}
         </div>

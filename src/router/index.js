@@ -49,12 +49,14 @@ const routes = [
         component: () => import('../views/roles/AdminView.vue'),
         meta: { requiresAuth: true }
       },
+
       {
-        path: '/dir',
-        name: 'director',
-        component: () => import('../views/roles/DirectorView.vue'),
+        path: '/positions',
+        name: 'positions',
+        component: () => import('../views/admin/PositionView.vue'),
         meta: { requiresAuth: true }
       },
+
       {
         path: '/tehnologist',
         name: 'tehnologist',
@@ -82,43 +84,32 @@ const routes = [
       {
         path: '/page/:id', // :id is the route parameter
         name: 'PageDetail',
-        component: () => import('@/views/orders/OrderPage.vue') // Create this component
+        component: () => import('@/views/orders/OrderPage.vue'), // Create this component,
+        children: [
+          {
+            path: '/:id/:position', // :id is the route parameter
+            name: 'files',
+            component: () => import('@/views/orders/FileView.vue') // Create this component
+          }
+        ]
       },
+      {
+        path: ':id/:position', // :id is the route parameter
+        name: 'files',
+        component: () => import('@/views/orders/FileView.vue') // Create this component
+      },
+
       // cheh
       {
         path: '/foreman',
         component: () => import('../views/workshop/ForemanView.vue'),
         meta: { requiresAuth: true }
       },
-      {
-        path: '/painting',
-        component: () => import('../views/workshop/PaintingView.vue'),
-        meta: { requiresAuth: true }
-      },
-      {
-        path: '/sawyer',
-        component: () => import('../views/workshop/SawyerView.vue'),
-        meta: { requiresAuth: true }
-      },
-      {
-        path: '/chpu',
-        component: () => import('../views/workshop/ChpuView.vue'),
-        meta: { requiresAuth: true }
-      },
-      {
-        path: '/collector',
-        component: () => import('../views/workshop/CollectorView.vue'),
-        meta: { requiresAuth: true }
-      },
-      {
-        path: '/edge',
-        component: () => import('../views/workshop/EdgeView.vue'),
-        meta: { requiresAuth: true }
-      },
 
       {
-        path: '/vacuum',
-        component: () => import('../views/workshop/VacuumView.vue'),
+        path: '/workshop/:position',
+        name: 'workshop',
+        component: () => import('../views/roles/WorkshopView.vue'),
         meta: { requiresAuth: true }
       },
       {
@@ -130,13 +121,18 @@ const routes = [
   },
 
   {
-    path: '/login',
+    path: '/',
     component: () => import('@/layouts/general/GeneralView.vue'),
     children: [
       {
-        path: '',
+        path: 'login',
         name: 'login',
         component: () => import('../views/login/LoginView.vue')
+      },
+      {
+        path: 'tablo',
+        name: 'tablo',
+        component: () => import('../views/table/TabloView.vue')
       }
     ]
   }

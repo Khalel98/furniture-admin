@@ -8,6 +8,21 @@
       <v-form ref="form">
         <v-row>
           <v-col cols="12" sm="6" md="6">
+            <v-select
+              v-model="dataToEdit.district"
+              :items="districtItems"
+              :rules="[(v) => !!v || 'Выберите район']"
+              item-title="name"
+              item-value="position"
+              label="Район"
+              variant="outlined"
+              :loading="isLoadingDistricts"
+              :disabled="isSelectDisabledDistricts"
+              return-object
+            ></v-select>
+          </v-col>
+
+          <v-col cols="12" sm="6" md="6">
             <v-text-field
               variant="outlined"
               v-model="dataToEdit.address"
@@ -90,6 +105,9 @@ export default {
   },
   data() {
     return {
+      isLoadingDistricts: true,
+      isSelectDisabledDistricts: true,
+      districtItems: [],
       dataToEdit: { ...this.dataDefault },
       dialog: false,
       loader: false
@@ -114,6 +132,7 @@ export default {
       const data = {
         id: this.dataToEdit.id,
         address: this.dataToEdit.address,
+        district: this.dataToEdit.district,
         date_end: this.dataToEdit.date_end,
         type: this.dataToEdit.type,
         sum: this.dataToEdit.sum
@@ -132,6 +151,24 @@ export default {
       }
     },
 
+    async getPositions() {
+      const data = {
+        region: 2,
+        type: 1
+      }
+      try {
+        const response = await axios.get('location/list', {
+          params: data
+        })
+        console.log('Response:', response.data)
+        this.districtItems = response.data
+        this.isLoadingDistricts = false
+        this.isSelectDisabledDistricts = false
+      } catch (error) {
+        console.error('Error:', error)
+      }
+    },
+
     successStatus() {
       document.getElementsByClassName('dp__input')[0].style.border = '1px solid #ababab'
     },
@@ -143,6 +180,9 @@ export default {
       this.dialog = false
       this.dataToEdit = { ...this.dataDefault }
     }
+  },
+  mounted() {
+    this.getPositions()
   }
 }
 </script>

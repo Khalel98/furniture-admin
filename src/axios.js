@@ -2,6 +2,7 @@ import axios from 'axios'
 import store from './store'
 
 const apiKey = 'https://api.app-mebel.kz/api/v1'
+// const apiKey = 'http://192.168.31.88:8080'
 
 const instance = axios.create({
   baseURL: apiKey,
@@ -27,5 +28,24 @@ instance.interceptors.request.use(
     return Promise.reject(error)
   }
 )
+
+instance.interceptors.response.use(
+  (response) => {
+    // Do something with the response data
+    return response
+  },
+  (error) => {
+    if (error.response && error.response.status === 401) {
+      // Logout user or perform any other action related to token expiration
+      store.dispatch('logout') // Assuming you have a logout action in your store
+      setTimeout(reloadPage, 1000)
+    }
+    return Promise.reject(error)
+  }
+)
+
+function reloadPage() {
+  location.reload()
+}
 
 export default instance
