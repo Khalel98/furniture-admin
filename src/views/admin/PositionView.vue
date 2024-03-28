@@ -1,7 +1,7 @@
 <template>
   <div style="display: flex; justify-content: space-between">
     <div class="search__filter">
-      <input class="search__filter__input" v-model="search" @input="loadData" placeholder="Поиск" />
+      <input class="search__filter__input" v-model="search" placeholder="Поиск" />
     </div>
 
     <AddRole @getPositions="getPositions" />

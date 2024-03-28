@@ -13,7 +13,7 @@
       variant="outlined"
       return-object
       single-line
-      hide-details="none"
+      hide-details="none" 
     ></v-select>
   </div>
 

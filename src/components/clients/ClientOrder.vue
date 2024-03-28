@@ -8,7 +8,6 @@
         <v-select
           v-model="selectDistrict"
           :items="districtItems"
-          :rules="[(v) => !!v || 'Выберите район']"
           item-title="name"
           item-value="position"
           label="Район"
@@ -46,20 +45,10 @@
         ></v-text-field>
       </v-col>
       <v-col cols="12" sm="6" md="6">
-        <v-text-field
-          variant="outlined"
-          v-model="dataDefault.type"
-          label="Тип"
-          :rules="[(v) => !!v || 'Введите Тип']"
-        ></v-text-field>
+        <v-text-field variant="outlined" v-model="dataDefault.type" label="Тип"></v-text-field>
       </v-col>
       <v-col cols="12" sm="6" md="6">
-        <v-text-field
-          variant="outlined"
-          v-model="dataDefault.sum"
-          label="Сумма"
-          :rules="[(v) => !!v || 'Введите Сумму', (v) => /^\d+$/.test(v) || 'Введите только цифры']"
-        ></v-text-field>
+        <v-text-field variant="outlined" v-model="dataDefault.sum" label="Сумма"></v-text-field>
       </v-col>
 
       <v-col cols="12" sm="6" md="6">
@@ -104,8 +93,8 @@ export default {
         client_id: this.clientData.id,
         address: '',
         date_end: null,
-        type: '',
-        sum: '',
+        type: null,
+        sum: null,
         comment: ''
       },
       loader: false

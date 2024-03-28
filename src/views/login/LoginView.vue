@@ -105,7 +105,6 @@ export default {
   data() {
     return {
       toggle: false,
-      apiKey: 'https://api.cards.edus.kz/public',
       username: '',
       password: '',
 
